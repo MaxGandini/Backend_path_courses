@@ -1,9 +1,11 @@
 import pygame  # noqa: F401
+import sys
 from circleshape import *  # noqa: F403
 from player import Player # noqa: F403
 from constants import *  # noqa: F403
 from asteroid import Asteroid
 from asteroidfield import AsteroidField
+from shot import Shot
 
 def main():
     pygame.init()
@@ -12,10 +14,12 @@ def main():
     updatable= pygame.sprite.Group()
     drawable = pygame.sprite.Group()
     asteroids = pygame.sprite.Group()
+    shots = pygame.sprite.Group()
 
     Player.containers = (updatable,drawable)
     Asteroid.containers = (asteroids, updatable, drawable)
     AsteroidField.containers = (updatable)
+    Shot.containers = (shots, updatable, drawable)
 
     print("Starting asteroids!")
     print("Screen width:", SCREEN_WIDTH)  # noqa: F405
@@ -38,6 +42,11 @@ def main():
         updatable.update(delta)
         for draw in drawable:
             draw.draw(screen)
+        for asteroid in asteroids:
+            collision = asteroid.collision(player_0)
+            if collision:
+                print("Game over!")
+                sys.exit()
 
         pygame.display.flip()
 
